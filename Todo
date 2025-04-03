@@ -1,0 +1,31 @@
+
+Score totals for each round and display on delay screen
+
+better farmer images - could animate while walking and picking
+
+better locust images and animation
+better locust motion
+
+
+Introduce PieSlinger
+
+Opening storyline with quick dismiss
+
+Remove duplicate setcolor routines
+
+Test on Rasp Pi 2/3/4, zero...
+Test on other Linux distro
+
+
+Scaling for different game window sizes
+
+------ gameLibrary -------
+
+Push game routines from growPi to game.c?
+
+Keyboard input
+
+drag and drop for moving things
+
+Text justification
+

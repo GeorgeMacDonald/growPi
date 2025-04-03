@@ -4,9 +4,10 @@
 
 #include "game.h"
 
-float  random_float(float min, float max);
-float  random_movement(float min, float max);
-double moveTowardsObj( double staticObjPos, double movingObjPos, double maxMovement );
+float  randomFloat(    float min, float max);
+float  randomMovement( float min, float max);
+
+double moveTowardsObj(      double staticObjPos, double movingObjPos, double maxMovement );
 int    movingObjectAtPlant( int i, double objX, double objY );
 
 
@@ -41,12 +42,15 @@ struct {
   gameImage *farmer1;
   gameImage *gameOver;
   gameImage *gameWon;
+  gameImage *pieSlinger;
   gameImage *delayImage;
   gameSound *soundCanNotDo;
   double     locustx;
   double     locusty;
+  int	     locustIndex;
   double     farmerx;
   double     farmery;
+  int	     farmerIndex;
   int        numPlanted;
   int        numSeeded;
   uint       threadID;
@@ -74,7 +78,7 @@ doGameFrame(void *widget, void *ctx, void *user_data, int width, int height)
 
 
 float 
-random_float(float min, float max) 
+randomFloat(float min, float max) 
 {
     static int seeded = 0;
     if (!seeded) {
@@ -86,13 +90,13 @@ random_float(float min, float max)
 }
 
 float 
-random_movement(float min, float max) 
+randomMovement(float min, float max) 
 {
     float delta;
     float dir;
 
-    delta = random_float(min, max);
-    dir   = random_float(min, max);
+    delta = randomFloat(min, max);
+    dir   = randomFloat(min, max);
 
     if ( dir < ((max - min)/2) + min )
         delta = 0.0 - delta;
@@ -141,11 +145,13 @@ movingObjectAtPlant( int i, double objX, double objY )
 void
 newRound()
 {
-  glob.locustx = random_float( 10.0, 700.0 );
-  glob.locusty = random_float( 40.0, 500.0 );
+  glob.locustx = randomFloat( 10.0, 700.0 );
+  glob.locusty = randomFloat( 40.0, 500.0 );
+  glob.locustIndex = 0;
 
-  glob.farmerx = random_float( 10.0, 760.0 );
-  glob.farmery = random_float( 41.0, 550.0 );
+  glob.farmerx = randomFloat( 10.0, 760.0 );
+  glob.farmery = randomFloat( 41.0, 550.0 );
+  glob.farmerIndex = 0;
 
   glob.numPlanted = 0;
   glob.numSeeded  = 0;
@@ -345,7 +351,12 @@ void doGame( void *ctx, void *widget, int width, int height )
       if ( glob.count > 10 )
       {
           if ( glob.farmerPicked > 20 && ( glob.farmerPicked > glob.locustEats ))
-            glob.delayImage = glob.gameWon;
+	  {
+	    if ( glob.farmerPicked > 200 )
+		glob.delayImage = glob.pieSlinger;
+            else
+		glob.delayImage = glob.gameWon;
+	  }
           else
             glob.delayImage = glob.gameOver;
 
@@ -376,18 +387,21 @@ void doGame( void *ctx, void *widget, int width, int height )
   }
   else /* Move around randomly */
   {
-      glob.locustx += random_movement( 8.0, 40.0 );
-      glob.locusty += random_movement( 6.0, 40.0 );
+      glob.locustx += randomMovement( 8.0, 40.0 );
+      glob.locusty += randomMovement( 6.0, 40.0 );
     
       glob.locustx = constrainWrapValue( glob.locustx, 1.1, width-1.0 );
       glob.locusty = constrainWrapValue( glob.locusty, 21.0, height-1.0 );
   } 
 
-  dir = random_float( 2.0, 8.0 );
-  if ( dir > 4.0 )  // should alternate moving images, or eating images
+  if ( glob.locustIndex )
      gamePutImage(ctx, glob.locust, glob.locustx, glob.locusty);
    else
      gamePutImage(ctx, glob.locust1, glob.locustx, glob.locusty);
+
+  glob.locustIndex +=  1;
+  if ( glob.locustIndex > 1 )
+  	glob.locustIndex = 0;
 
   gameProject(ctx);   
 
@@ -408,9 +422,14 @@ void doGame( void *ctx, void *widget, int width, int height )
      }
 
      if ( glob.farmerPicked > 0 ) /* Show image with berries in basket */
+     {
+       // use farmer index to animate farmer
        gamePutImage(ctx, glob.farmer1, glob.farmerx, glob.farmery);
+     }
      else
+     {
        gamePutImage(ctx, glob.farmer, glob.farmerx, glob.farmery);
+     }
   
      gameProject(ctx);   
 
@@ -504,6 +523,7 @@ int doGameInit(int argc, char *argv[])
 
   glob.gameOver     = gameGetImage("gameOver.png");
   glob.gameWon      = gameGetImage("gameWon.png");
+  glob.pieSlinger   = gameGetImage("pieSlinger.png");
 
   glob.delayImage   = glob.gameWon;
 
