@@ -16,3 +16,7 @@ After 10 plants grow and die and nothing is left growing the round will end and 
 the locust eats. Four more rounds take place and the pace quickens.
 
 It is possible to win every time once you learn how.
+
+Ideas: add more "levels", i.e Ship_to_processing, Bake_the_Pie, Distribute
+       After those switch to a 3D game with PieSlinger character that navigates a maze, on adventtures/quests/missions
+       Add a retro "rootCeller" tty character nethacks like version just for fun.
