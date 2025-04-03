@@ -1,5 +1,5 @@
 # growPi
-A simple game for Rasp Pi using minimal cairo and Gtk, has a small minimalistic game API. 
+A simple game for Rasp Pi(Linux) using minimal cairo and Gtk, has a small minimalistic game API. 
 
 growPi -> grow and harvest raspberries before a locust eats your produce. 
 
@@ -32,3 +32,8 @@ Ideas:
 
    + Add retro "rootCeller" tty character nethacks like version just for fun. FixPipes, 
      socketRepair ShellGrind, ...
+
+
+Just tested it on Mint linux 20.3 Cinnamon and it works after running
+
+sudo apt-get install libgtk-3-dev
